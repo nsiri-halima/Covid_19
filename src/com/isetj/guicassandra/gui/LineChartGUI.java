@@ -54,12 +54,16 @@ public class LineChartGUI extends JFrame {
     private XYDataset createDataset() {
 
         XYSeries series = new XYSeries("2020");
-        series.add(1, 567);
-        series.add(2, 612);
-        series.add(3, 800);
-        series.add(4, 980);
-        series.add(5, 1410);
-        series.add(6, 2350);
+        
+        series.add(1,0);
+        series.add(2,0);
+        series.add(3,500);
+        series.add(4,400);
+        series.add(5,30);
+       // series.add(6,*);
+        //series.add(7,*);
+        //series.add(50, 1410);
+        //series.add(60, 2350);
 
         XYSeriesCollection dataset = new XYSeriesCollection();
         dataset.addSeries(series);
@@ -70,9 +74,9 @@ public class LineChartGUI extends JFrame {
     private JFreeChart createChart(XYDataset dataset) {
 
         JFreeChart chart = ChartFactory.createXYLineChart(
-                "Average Infected Case per Date",
-                "Date",
-                "Infected Case",
+                "Diagramme de maladie à coronavirus en Tunisie",
+                "nombre de mois",
+                "Numero du mois",
                 dataset,
                 PlotOrientation.VERTICAL,
                 true,
@@ -97,7 +101,7 @@ public class LineChartGUI extends JFrame {
 
         chart.getLegend().setFrame(BlockBorder.NONE);
 
-        chart.setTitle(new TextTitle("Average Infected Case per Date",
+        chart.setTitle(new TextTitle("Diagramme de maladie à coronavirus en Tunisie(par mois)",
                         new Font("Serif", java.awt.Font.BOLD, 18)
                 )
         );

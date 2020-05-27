@@ -7,6 +7,7 @@ package com.isetj.guicassandra.gui;
 
 import com.isetj.guicassandra.dao.CassandraConnector;
 import com.isetj.guicassandra.jpa.CityEntity;
+import com.isetj.guicassandra.gui.LineChartGUI;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.util.List;
@@ -25,6 +26,8 @@ import org.jfree.data.category.DefaultCategoryDataset;
  * @author MSellami
  */
 public class CovidGUI extends javax.swing.JFrame {
+private LineChartGUI ex;
+
 
     /**
      * Creates new form CityGUI
@@ -91,7 +94,6 @@ public class CovidGUI extends javax.swing.JFrame {
         jLabel15 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
-        jPanel5 = new javax.swing.JPanel();
         jLabel12 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -377,25 +379,28 @@ public class CovidGUI extends javax.swing.JFrame {
         jPanel4.setLayout(null);
 
         jLabel13.setFont(new java.awt.Font("Tahoma", 3, 14)); // NOI18N
+        jLabel13.setForeground(new java.awt.Color(255, 255, 255));
         jLabel13.setText("Nombre de nouveaux cas:");
         jPanel4.add(jLabel13);
-        jLabel13.setBounds(6, 20, 190, 20);
+        jLabel13.setBounds(10, 100, 190, 20);
 
         jLabel14.setFont(new java.awt.Font("Tahoma", 3, 14)); // NOI18N
+        jLabel14.setForeground(new java.awt.Color(255, 255, 255));
         jLabel14.setText("Nombre total des cas:");
         jPanel4.add(jLabel14);
-        jLabel14.setBounds(14, 60, 151, 17);
+        jLabel14.setBounds(30, 170, 151, 17);
         jPanel4.add(jTextField1);
-        jTextField1.setBounds(233, 11, 157, 32);
+        jTextField1.setBounds(230, 90, 157, 32);
         jPanel4.add(jTextField2);
-        jTextField2.setBounds(233, 61, 157, 28);
+        jTextField2.setBounds(230, 160, 157, 28);
         jPanel4.add(jTextField3);
-        jTextField3.setBounds(522, 46, 97, 31);
+        jTextField3.setBounds(290, 230, 97, 31);
 
         jLabel15.setFont(new java.awt.Font("Tahoma", 3, 14)); // NOI18N
+        jLabel15.setForeground(new java.awt.Color(255, 255, 255));
         jLabel15.setText("Pourcentage:");
         jPanel4.add(jLabel15);
-        jLabel15.setBounds(522, 29, 100, 17);
+        jLabel15.setBounds(180, 240, 100, 17);
 
         jButton1.setText("Statique");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -404,7 +409,7 @@ public class CovidGUI extends javax.swing.JFrame {
             }
         });
         jPanel4.add(jButton1);
-        jButton1.setBounds(205, 107, 90, 32);
+        jButton1.setBounds(420, 230, 90, 32);
 
         jButton5.setText("Afficher le graphe");
         jButton5.addActionListener(new java.awt.event.ActionListener() {
@@ -413,21 +418,7 @@ public class CovidGUI extends javax.swing.JFrame {
             }
         });
         jPanel4.add(jButton5);
-        jButton5.setBounds(384, 107, 150, 32);
-
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 286, Short.MAX_VALUE)
-        );
-
-        jPanel4.add(jPanel5);
-        jPanel5.setBounds(10, 145, 665, 286);
+        jButton5.setBounds(270, 320, 150, 32);
 
         jLabel12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/covid19.jpg"))); // NOI18N
         jLabel12.setText("jLabel12");
@@ -551,29 +542,37 @@ public class CovidGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-                                        
-     DefaultCategoryDataset barchartdata=new DefaultCategoryDataset();
-     barchartdata.setValue(0,"Janfier","fevrier");
-     barchartdata.setValue(50,"fevrier","mars");
-     barchartdata.setValue(500,"mars","avril");
-     barchartdata.setValue(1051,"avril","mai");
+                              ex= new LineChartGUI();
+ ex.setVisible(true);
+ 
+ 
+ 
+     //DefaultCategoryDataset barchartdata=new DefaultCategoryDataset();
+     //barchartdata.setValue(0,"Janfier","fevrier");
+     //barchartdata.setValue(50,"fevrier","mars");
+     //barchartdata.setValue(500,"mars","avril");
+     //barchartdata.setValue(1051,"avril","mai");
      
      
-     JFreeChart barchart= ChartFactory.createAreaChart("hgvtuf", "gvgjjh", "cfgjfccjgc", barchartdata,PlotOrientation.VERTICAL,false,true,false);
-CategoryPlot barchrt= barchart.getCategoryPlot();
-barchrt.setRangeGridlinePaint(Color.ORANGE);
-ChartPanel barPanel=new ChartPanel(barchart);
- jPanel5.removeAll();
- jPanel5.add(barPanel,BorderLayout.CENTER);
- jPanel5.validate();
+     //JFreeChart barchart= ChartFactory.createBarChart("hgvtuf", "gvgjjh", "cfgjfccjgc", barchartdata,PlotOrientation.VERTICAL,false,true,false);
+//CategoryPlot barchrt= barchart.getCategoryPlot();
+//barchrt.setRangeGridlinePaint(Color.ORANGE);
+//ChartPanel barPanel=new ChartPanel(barchart);
+ //jPanel5.removeAll();
+ //jPanel5.add(barPanel,BorderLayout.CENTER);
+ //jPanel5.validate();
+ 
+ 
 
-               // TODO add your handling code here:
+
+            
     }//GEN-LAST:event_jButton5ActionPerformed
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
+        
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -601,7 +600,11 @@ ChartPanel barPanel=new ChartPanel(barchart);
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
+                CovidGUI c= new CovidGUI();
+                c.setSize(400,400);
+                c.setTitle("Covid-19");
                 new CovidGUI().setVisible(true);
+                
             }
         });
     }
@@ -635,7 +638,6 @@ ChartPanel barPanel=new ChartPanel(barchart);
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
     private javax.swing.JPasswordField jPasswordField1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSpinner jSpPopulation;
