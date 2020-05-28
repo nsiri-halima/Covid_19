@@ -17,11 +17,15 @@ import model.City;
  */
 public class CityEntity extends City {
 
+
     public static String TableName = "City";
 
+
     public CityEntity(int IDCity,String CityName, double Longitude, double latitude, double population) {
-        super(IDCity,CityName, Longitude, latitude, population);
-    }
+     super(IDCity,CityName, Longitude, latitude, population);
+   }
+
+    
 
     public void createCityTable() {
         StringBuilder sb = new StringBuilder("CREATE TABLE IF NOT EXISTS ")
@@ -55,6 +59,9 @@ public class CityEntity extends City {
         });
         return cities;
     }
+    
+    
+    
     public static List<City> selectCityByName(String CityName) {
         StringBuilder sb
                 = new StringBuilder("SELECT * FROM ")
@@ -95,4 +102,42 @@ public class CityEntity extends City {
         String query = sb.toString();
         CassandraConnector.ExecuteQuery(query);
     }
+    public static void deleteCity(String keyspaceName){
+       
+         StringBuilder sb
+                = new StringBuilder("DELETE FROM")
+                        
+                        .append(TableName)
+                        .append(" Where IDCity='")
+                        .append("IDCity")
+                        .append("');");
+
+        String query = sb.toString();
+         CassandraConnector.ExecuteQuery(query);
+        
+      
+    }
+    public static void UpdateCity(City city,String keyspaceName){
+       
+         StringBuilder sb
+                = new StringBuilder("UPDATE")
+                        
+                        .append(TableName)
+                        .append("SET")
+                        .append("CityName, Longitude,Latitude,Population ")
+                        .append(city.getCityName()).append("',")
+                        .append(city.getLongitude()).append(",")
+                        .append(city.getLatitude()).append(",")
+                        .append(city.getPopulation()).append(");")
+                        .append(" Where IDCity=")
+                        .append("IDCity");
+                      
+
+        String query = sb.toString();
+         CassandraConnector.ExecuteQuery(query);
+        
+      
+    }
+   
 }
+

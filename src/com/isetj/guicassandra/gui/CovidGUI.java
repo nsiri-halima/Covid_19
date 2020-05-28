@@ -10,9 +10,14 @@ import com.isetj.guicassandra.jpa.CityEntity;
 import com.isetj.guicassandra.gui.LineChartGUI;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import model.City;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -20,24 +25,25 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
- 
+ import model.City;
+
 /**
  *
  * @author MSellami
  */
 public class CovidGUI extends javax.swing.JFrame {
 private LineChartGUI ex;
-
+ static int CityID;
 
     /**
      * Creates new form CityGUI
      */
-    public CovidGUI() {
-
+    public CovidGUI(){
         initComponents();
-
     }
 
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -77,8 +83,8 @@ private LineChartGUI ex;
         jTbCities = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
         jbAdd = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        Update = new javax.swing.JButton();
+        Delete = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jbRefresh = new javax.swing.JButton();
         jLabel10 = new javax.swing.JLabel();
@@ -281,6 +287,11 @@ private LineChartGUI ex;
                 return types [columnIndex];
             }
         });
+        jTbCities.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTbCitiesMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTbCities);
 
         jPCity.add(jScrollPane1);
@@ -295,14 +306,19 @@ private LineChartGUI ex;
             }
         });
 
-        jButton2.setText("Update");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        Update.setText("Update");
+        Update.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                UpdateActionPerformed(evt);
             }
         });
 
-        jButton3.setText("Delete");
+        Delete.setText("Delete");
+        Delete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DeleteActionPerformed(evt);
+            }
+        });
 
         jButton4.setText("Find");
 
@@ -322,8 +338,8 @@ private LineChartGUI ex;
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jbRefresh, javax.swing.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)
                     .addComponent(jbAdd, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)
+                    .addComponent(Update, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)
+                    .addComponent(Delete, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)
                     .addComponent(jButton4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE))
                 .addContainerGap(19, Short.MAX_VALUE))
         );
@@ -334,9 +350,9 @@ private LineChartGUI ex;
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jbRefresh)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton2)
+                .addComponent(Update)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton3)
+                .addComponent(Delete)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton4))
         );
@@ -517,30 +533,75 @@ private LineChartGUI ex;
         }        // TODO add your handling code here:
     }//GEN-LAST:event_jbRefreshActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    private void UpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UpdateActionPerformed
 
+       City city = new City(Integer.parseInt(jtxtCityID.getText()), this.jtxtCityName.getText(), Double.parseDouble(this.jtxtLongitude.getText()), Double.parseDouble(this.jtxtLatitude.getText()), Double.parseDouble(this.jSpPopulation.getValue().toString()));
+        try {
+            //insertion d'une nouvelle ville
+            CityEntity.UpdateCity(city, this.jtxtDbName.getText());
+            //recuperer tous les cities inseres dans la bases
+            List<City> Cities = CityEntity.selectAll(this.jtxtDbName.getText());
+            //Creer un model pour la table/schema
+            DefaultTableModel model = new DefaultTableModel(new Object[]{"ID City", "City Name", "Longitude", "Latitude", "Population"}, 0);
+            for (City City : Cities) {
+                model.addRow(new Object[]{City.getIDCity(), City.getCityName(), City.Longitude, City.Latitude, City.getPopulation()});
+            }
+            jTbCities.setModel(model);
+            JOptionPane.showMessageDialog(this, "Update City with Success", "Connection", JOptionPane.INFORMATION_MESSAGE);
+        } catch (Exception e) {
+            System.out.print(e);
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Database Update Error", JOptionPane.ERROR_MESSAGE);
+
+        }
+               
+             
+      
+    }//GEN-LAST:event_UpdateActionPerformed
+
+    
+    
+    
+    
+    
+    
+    
     private void jtxtLongitudeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtxtLongitudeActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jtxtLongitudeActionPerformed
 
+    
+    
+    
+    
+    
+    
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
                                         
         // TODO add your handling code here:
       
-	String nombre1String = jTextField1.getText();//On r�cup�re la valeur dans le premier champ
-	int nvc = Integer.parseInt(nombre1String);//On convertit cette valeur en un nombre
+	String nombre1String = jTextField1.getText();
+	int nvc = Integer.parseInt(nombre1String);
 	
-	String nombre2String = jTextField2.getText();//On r�cup�re la valeur dans le deuxi�me champ
-	int total = Integer.parseInt(nombre2String);//On convertit cette valeur en un nombre
+	String nombre2String = jTextField2.getText();
+	int total = Integer.parseInt(nombre2String);
 	
 	int resultat = (nvc *100/ total);
 	jTextField3.setText( resultat+"%");
 
-                 // TODO add your handling code here:
+                 
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
                               ex= new LineChartGUI();
  ex.setVisible(true);
@@ -567,6 +628,40 @@ private LineChartGUI ex;
 
             
     }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jTbCitiesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTbCitiesMouseClicked
+      int i = jTbCities.getSelectedRow();
+        TableModel model = jTbCities.getModel();
+        CityID = Integer.parseInt(model.getValueAt(jTbCities.getSelectedRow(), 0).toString());
+        jtxtCityName.setText(model.getValueAt(i, 1).toString());
+        jtxtLatitude.setText(model.getValueAt(i, 2).toString());
+        jtxtLongitude.setText(model.getValueAt(i, 3).toString());
+        jSpPopulation.setValue(model.getValueAt(i, 4));
+        
+    }//GEN-LAST:event_jTbCitiesMouseClicked
+
+    private void DeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteActionPerformed
+      
+        try {
+            
+            CityEntity.deleteCity(this.jtxtDbName.getText());
+            
+            List<City> Cities = CityEntity.selectAll(this.jtxtDbName.getText());
+            
+            DefaultTableModel model = (DefaultTableModel) jTbCities.getModel();
+            for (City City : Cities) {
+                int SelectedRowIndex = jTbCities.getSelectedRow();
+                model.removeRow(SelectedRowIndex);
+            }
+            jTbCities.setModel(model);
+            int option = JOptionPane.showConfirmDialog(rootPane,
+                    "Are you sure you want to Delete?", "Delete confirmation", JOptionPane.YES_NO_OPTION);
+        } catch (Exception e) {
+            System.out.print(e);
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Database Delete Error", JOptionPane.ERROR_MESSAGE);
+
+        }
+    }//GEN-LAST:event_DeleteActionPerformed
 
     /**
      * @param args the command line arguments
@@ -600,9 +695,7 @@ private LineChartGUI ex;
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                CovidGUI c= new CovidGUI();
-                c.setSize(400,400);
-                c.setTitle("Covid-19");
+               
                 new CovidGUI().setVisible(true);
                 
             }
@@ -610,9 +703,9 @@ private LineChartGUI ex;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton Delete;
+    private javax.swing.JButton Update;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
